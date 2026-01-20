@@ -43,7 +43,7 @@ export default function Navigation() {
             </div>
             <div className="hidden sm:block">
               <span className={`font-display text-2xl font-semibold tracking-wide transition-colors ${
-                isScrolled ? 'text-charcoal' : 'text-charcoal'
+                isScrolled ? 'text-charcoal' : 'text-white'
               }`}>
                 Comfort
               </span>
@@ -60,7 +60,7 @@ export default function Navigation() {
                 key={link.href}
                 href={link.href}
                 className={`relative px-5 py-2 font-body text-sm font-medium tracking-wide uppercase transition-colors group ${
-                  isScrolled ? 'text-charcoal' : 'text-charcoal'
+                  isScrolled ? 'text-charcoal' : 'text-white'
                 }`}
               >
                 {link.label}
@@ -86,19 +86,19 @@ export default function Navigation() {
             aria-label="Toggle menu"
           >
             <span
-              className={`w-6 h-0.5 bg-charcoal transition-all duration-300 ${
-                isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''
-              }`}
+              className={`w-6 h-0.5 transition-all duration-300 ${
+                isScrolled ? 'bg-charcoal' : 'bg-white'
+              } ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}
             />
             <span
-              className={`w-6 h-0.5 bg-charcoal transition-all duration-300 ${
-                isMobileMenuOpen ? 'opacity-0' : ''
-              }`}
+              className={`w-6 h-0.5 transition-all duration-300 ${
+                isScrolled ? 'bg-charcoal' : 'bg-white'
+              } ${isMobileMenuOpen ? 'opacity-0' : ''}`}
             />
             <span
-              className={`w-6 h-0.5 bg-charcoal transition-all duration-300 ${
-                isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''
-              }`}
+              className={`w-6 h-0.5 transition-all duration-300 ${
+                isScrolled ? 'bg-charcoal' : 'bg-white'
+              } ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}
             />
           </button>
         </div>
