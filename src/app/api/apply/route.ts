@@ -4,8 +4,8 @@ import { sendApplicationEmail } from '@/lib/email';
 export async function POST(request: NextRequest) {
   try {
     // Check if email is configured
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.error('Email not configured: Missing GMAIL_USER or GMAIL_APP_PASSWORD');
+    if (!process.env.RESEND_API_KEY) {
+      console.error('Email not configured: Missing RESEND_API_KEY');
       return NextResponse.json(
         { error: 'Email service not configured. Please contact us directly.' },
         { status: 500 }

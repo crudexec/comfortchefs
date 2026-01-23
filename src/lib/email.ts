@@ -1,12 +1,12 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured');
+  }
+  return new Resend(apiKey);
+}
 
 interface ApplicationEmailParams {
   applicantEmail: string;
@@ -76,9 +76,10 @@ export async function sendApplicationEmail(params: ApplicationEmailParams) {
     </div>
   `;
 
-  await transporter.sendMail({
-    from: process.env.GMAIL_USER,
-    to: process.env.GMAIL_USER,
+  const resend = getResendClient();
+  await resend.emails.send({
+    from: 'Comfort Chefs <onboarding@resend.dev>',
+    to: [process.env.CONTACT_EMAIL || 'delivered@resend.dev'],
     replyTo: applicantEmail,
     subject: `Job Application: ${jobTitle} - ${applicantName}`,
     html: emailHtml,
@@ -156,9 +157,10 @@ export async function sendQuoteEmail(params: QuoteEmailParams) {
     </div>
   `;
 
-  await transporter.sendMail({
-    from: process.env.GMAIL_USER,
-    to: process.env.GMAIL_USER,
+  const resend = getResendClient();
+  await resend.emails.send({
+    from: 'Comfort Chefs <onboarding@resend.dev>',
+    to: [process.env.CONTACT_EMAIL || 'delivered@resend.dev'],
     replyTo: email,
     subject: `Quote Request: ${eventTypeLabels[eventType || ''] || 'General Inquiry'} - ${name}`,
     html: emailHtml,
