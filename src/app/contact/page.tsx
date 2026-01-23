@@ -39,12 +39,46 @@ function ContactForm() {
     date: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
-    alert('Thank you for your inquiry! We will get back to you soon.');
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          eventType: '',
+          guests: '',
+          date: '',
+          message: '',
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to send message');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -137,6 +171,18 @@ function ContactForm() {
             <h3 className="font-display text-2xl font-semibold text-charcoal mb-6">
               Request a Quote
             </h3>
+
+            {submitStatus === 'success' && (
+              <div className="mb-6 p-4 bg-forest/10 border border-forest/20 rounded-lg text-forest">
+                Thank you for your inquiry! We will get back to you soon.
+              </div>
+            )}
+
+            {submitStatus === 'error' && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                {errorMessage || 'An error occurred. Please try again.'}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -256,9 +302,10 @@ function ContactForm() {
 
               <button
                 type="submit"
-                className="btn-primary w-full"
+                disabled={isSubmitting}
+                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Inquiry
+                {isSubmitting ? 'Sending...' : 'Send Inquiry'}
               </button>
             </form>
           </div>
